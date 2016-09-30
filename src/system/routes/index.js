@@ -1,16 +1,15 @@
 import React from 'react';
-import { Route, IndexRoute } from 'react-router';
-
-
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import {syncHistoryWithStore} from 'react-router-redux';
 import RootApp from '../../components/containers/RootApp.js';
 
+export default (store, history) => {
 
-export default ({ dispatch, getState }) => {
+return(
+        <Router history={syncHistoryWithStore(browserHistory, store)}>
+            <Route path="/" component={RootApp}>
 
-
-  return (
-    <Route path="/" component={RootApp}>
-
-    </Route>
-  );
+            </Route>
+        </Router>
+    );
 };

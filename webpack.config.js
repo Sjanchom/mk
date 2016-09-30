@@ -1,32 +1,37 @@
 var path = require('path');
 var webpack = require('webpack');
 
-var AssetsPlugin = require('assets-webpack-plugin');
-
 module.exports = {
-
     devtool: 'eval-cheap-module-source-map',
-
     entry: [
-        'react-hot-loader/patch',
-        'webpack-dev-server/client?http://localhost:8080',
+        'webpack-dev-server/client?http://localhost:3000',
         'webpack/hot/only-dev-server',
+        'react-hot-loader/patch',
         'babel-polyfill',
         path.join(__dirname, 'src/client.js')
     ],
-
     output: {
         filename: '[name].js',
-        chunkFilename: "[name].js",
         path: path.join(__dirname, 'static', 'build'),
-        publicPath: 'http://localhost:8080/build/'
+        publicPath: '/build/'
     },
 
+
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('development'),
+                'BROWSER': true
+            }
+        }),
+          new webpack.HotModuleReplacementPlugin()
+    ],
     module: {
-        loaders: [
-            {
-                test: /\.js?$/,
-                loader: 'babel'
+        loaders: [{
+                test: /\.js$/,
+                loaders: ['babel'],
+                exclude: /node_modules/,
+                include: __dirname
             }, {
                 test: /\.eot(\?v=\d+.\d+.\d+)?$/,
                 loader: 'file'
@@ -52,28 +57,7 @@ module.exports = {
     resolve: {
         extensions: [
             '', '.json', '.js', '.jsx'
-        ],
-        root: [
-            path.join(__dirname, 'src'),
-            path.join(__dirname, 'node_modules')
         ]
-    },
-
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify('development'),
-                'BROWSER': true
-            }
-        }),
-        new webpack.HotModuleReplacementPlugin()
-    ],
-
-    devServer: {
-        hot: true,
-        inline: false,
-        historyApiFallback: true
-
     }
 
 };
